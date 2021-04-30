@@ -65,10 +65,11 @@ def checkPlink():
 def makeConsensusBed(bedName, commonSnpList, exclude, ntry):
     '''keeps track of tries and extracts common snps from plink binaries
     '''
-    if ntry > 0: # first time
+    if ntry <= 1: # first time
         outPath = bedName+'_Try{}'.format(ntry)
     else: #other times
-        outPath=re.sub('Try[\d+]', 'Try{}'.format(ntry+1),bedName)
+        outPath = bedName+'_Try{}'.format(ntry)
+        bedName = bedName+'_Try{}'.format(ntry-1)
     if os.path.exists(bedName+'.bed'):
         if not exclude:
             command = 'plink --bfile {} --extract {} --make-bed --out {}'.format(bedName, commonSnpList, outPath)
@@ -80,7 +81,7 @@ def makeConsensusBed(bedName, commonSnpList, exclude, ntry):
             print('EXTRACT SUCCESSFUL FROM BASE {} TO NEW BED {}'.format(bedName, outPath))
             return outPath
         else:
-            print(stderr.decode())
+            #print(stderr.decode())
             raise FileNotFoundError('EXTRACT FAILED CHECK PATH OF {}'.format(bedName))
     else:
         raise FileNotFoundError('CHECK {} '.format(bedName))
@@ -90,7 +91,7 @@ def processBedextract(bedList, commonSnpList, exclude, ntry):
     '''
     newBeds = []
     for bed in bedList:
-        print(bed)
+        #print(bed)
         out=makeConsensusBed(bedName=bed, commonSnpList=commonSnpList, exclude=exclude, ntry=ntry)
         if out:
             newBeds.append(out)
@@ -113,11 +114,11 @@ def bedMerge(newBeds, ntry, bedOut):
         else:
             baseBed = bed+'_Try{}'.format(ntry)
     outF.close()
-    command = "plink --bfile {} --merge-list {} --make-bed --out {}".format(baseBed, outList, mergedBed)
-    print(command)
+    command = "plink --allow-no-sex --bfile {} --merge-list {} --make-bed --out {}".format(baseBed, outList, mergedBed)
+    #print(command)
     mergeCommand = subprocess.Popen(command,  stdout=PIPE, stderr=PIPE, shell=True)
     stdout, stderr = mergeCommand.communicate()
-    print(stderr)
+    #print(stderr)
     if 'missnp' in stderr.decode(): ## trigger consensus bed
         print('CHECK MISNP OUTPUT')
         return False
@@ -150,9 +151,9 @@ def main():
                 mergeCall=bedMerge(newBeds=bedList, ntry=ntry, bedOut=bedOut)
                 if not mergeCall: ## retry but passing misnp error
                     misnpFile = '{}_Try{}-merge.missnp'.format(bedOut, ntry)
-                    ntry += 1
-                    print('3+ ALLELEIC VARIANTS DOING MISNP')
+                    print('3+ ALLELEIC VARIANTS DOING MISNP TRY {}'.format(ntry))
                     exclude = True
+                    ntry += 1
                     consensusBedlist = processBedextract(bedList, misnpFile, exclude, ntry)
                     if consensusBedlist:
                         print('PROCEEDING TO BEDMERGE')
@@ -164,7 +165,7 @@ def main():
                     else:
                         raise FileNotFoundError('BEDEXTRACT FAILED')
                 else:
-                    raise SystemError('BEDMERGE FAILED')
+                     print('BEDMERGE SUCCESSFUL{}.{}'.format(bedOut, ntry))
             else:
                 raise FileNotFoundError('BEDEXTRACT FAILED')
         else:
