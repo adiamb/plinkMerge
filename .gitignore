@@ -1,0 +1,6 @@
+bedFiles/*
+*.txt
+*.fam
+*.bed
+*.bim
+*.log
