@@ -17,7 +17,7 @@ def makeSNPlist(bedList):
             stdout, stderr = snpCommand.communicate()
             if 'done' in stdout.decode():
                 print('WRITING SNPLIST {}'.format(bed))
-                snplist.append(bed+'.snplist')
+                snpList.append(bed+'.snplist')
             else:
                 print(stderr.decode())
                 raise SystemError('PLINK ERROR FOR {}'.format(bed))
