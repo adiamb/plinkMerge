@@ -96,7 +96,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('file', type=argparse.FileType('r'), nargs='+', help='input a list of snplists from different GWAS batches')
     parser.add_argument('-out',required=True, help='outfile a stringname with a suffix .txt')
-    parser.add_argument('-bedList', required=True, help='merged output of the binary files')
+    parser.add_argument('-bedList', required=True, help='a list of plink binary files to be merged no extension one per line')
     parser.add_argument('-bedOut', required=True, help='merged output of the binary files')
     args = parser.parse_args()
     fileHandles = args.file
