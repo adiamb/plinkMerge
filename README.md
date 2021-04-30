@@ -7,3 +7,6 @@ plinkMerge requires the following arguments
 2. -out a string output of the common snp list to be written out
 3. -bedList ( list of plink files no file extension to be merged - one per line)
 4. -bedOut (a string output of the merged output)
+
+## typical command would be
+```python scripts/mergeGeno.py -bedList bedsTomergeList.txt -out snplistcommon.txt -bedOut mergedBed```
