@@ -159,13 +159,13 @@ def main():
                         print('PROCEEDING TO BEDMERGE')
                         mergeCall=bedMerge(newBeds=bedList, ntry=ntry, bedOut=bedOut)
                         if mergeCall:
-                            print('MERGE SUCESSFUL')
+                            print('BEDMERGE SUCCESSFUL TO {}_Try{}'.format(bedOut, ntry))
                         else:
                             raise SystemError('BEDMERGE FAILED')
                     else:
                         raise FileNotFoundError('BEDEXTRACT FAILED')
                 else:
-                     print('BEDMERGE SUCCESSFUL{}.{}'.format(bedOut, ntry))
+                     print('BEDMERGE SUCCESSFUL TO {}_Try{}'.format(bedOut, ntry))
             else:
                 raise FileNotFoundError('BEDEXTRACT FAILED')
         else:
